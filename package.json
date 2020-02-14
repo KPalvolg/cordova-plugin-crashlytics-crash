@@ -1,0 +1,21 @@
+{
+  "name": "cordova-plugin-crashlytics-crash",
+  "version": "0.0.1",
+  "description": "Adds test crash functionality for projects with Crashlytics already integrated.",
+  "cordova": {
+    "id": "cordova-plugin-crashlytics-crash",
+    "platforms": [
+      "android",
+      "ios",
+      "browser"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios",
+    "cordova-browser"
+  ],
+  "author": "KPalvolg (Mozzaz Inc.)",
+  "license": "ISC"
+}
