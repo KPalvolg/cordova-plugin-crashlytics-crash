@@ -1,6 +1,10 @@
 package org.apache.cordova.crashlyticscrash;
 
 import org.apache.cordova.CordovaPlugin;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apache.cordova.CallbackContext;
 
 import org.json.JSONArray;
@@ -21,18 +25,37 @@ public class CrashlyticsCrash extends CordovaPlugin {
         return false;
     }
 
-    private void crashMethod(CallbackContext callbackContext) {
+    private void crashMethod(final CallbackContext callbackContext) {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
+                Class<?> crashlyticsClass = null;
+                Method method = null;
+                Method crash = null;
+                Object obj = null;
+                Class[] params = null;
                 try {
-                    Class.forName("com.crashlytics.android.Crashlytics");
+                    crashlyticsClass = Class.forName("com.crashlytics.android.Crashlytics");
+                    method = crashlyticsClass.getMethod("getInstance", params);
+                    crash = crashlyticsClass.getMethod("crash", params);
+                    if(crash == null || method == null) {
+                        callbackContext.error("Error");
+                    }
                     //Crashlytics exists
 
-                    com.crashlytics.android.Crashlytics.getInstance().crash();
+                    obj = method.invoke(null);
+                    crash.invoke(obj);
                     callbackContext.success("App failed successfully.");
                 } catch(ClassNotFoundException cnfe) {
                     //Crashlytics does not exist
                     callbackContext.error("Missing core Crashlytics plugin.");
+                } catch (NoSuchMethodException e) {
+                    callbackContext.error("Error");
+                } catch (SecurityException e) {
+                    callbackContext.error("Error");
+                } catch (IllegalAccessException e) {
+                    callbackContext.error("Error");
+                } catch (InvocationTargetException e) {
+                    callbackContext.error("Error");
                 }
             }
         });
