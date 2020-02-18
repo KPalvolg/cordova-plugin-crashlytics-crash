@@ -44,7 +44,8 @@ public class CrashlyticsCrash extends CordovaPlugin {
 
                     obj = method.invoke(null);
                     crash.invoke(obj);
-                    callbackContext.success("App failed successfully.");
+                    //Invoke catches error from crashlytics crash method
+                    callbackContext.error("Error");
                 } catch(ClassNotFoundException cnfe) {
                     //Crashlytics does not exist
                     callbackContext.error("Missing core Crashlytics plugin.");
@@ -55,7 +56,9 @@ public class CrashlyticsCrash extends CordovaPlugin {
                 } catch (IllegalAccessException e) {
                     callbackContext.error("Error");
                 } catch (InvocationTargetException e) {
-                    callbackContext.error("Error");
+                    //Rethrow error caught by invoke
+                    callbackContext.success("App failed successfully.");
+                    throw (java.lang.RuntimeException) e.getTargetException();
                 }
             }
         });
